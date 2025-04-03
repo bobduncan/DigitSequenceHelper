@@ -7,6 +7,7 @@ namespace DigitSequenceHelper
         // Order of analysers is important
         public static readonly List<INumberAnalyser> Analysers =
             [
+                new FibonacciNumberAnalyser(),
                 new GeoMetricNumberAnalyser(),
             
                 new MultiplicationNumberAnalyser(),

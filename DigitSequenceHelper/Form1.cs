@@ -134,7 +134,15 @@ namespace DigitSequenceHelper
 
                     if (x.PredictedNumber != null)
                     {
-                        var label = new Label
+                        var label1 = new Label
+                        {
+                            Text = "=",
+                            BackColor = Color.Yellow,
+                            Width = TextBoxWidth / 2,
+                        };
+                        flatResults.Controls.Add(label1);
+
+                        var label2 = new Label
                         {
                             Text = x.PredictedNumber.ToString(),
                             BackColor = Color.Yellow,
@@ -142,7 +150,7 @@ namespace DigitSequenceHelper
                             //Margin = new Padding(TextBoxWidth / 2, 0, 0, 0)
                         };
 
-                        flatResults.Controls.Add(label);
+                        flatResults.Controls.Add(label2);
                     }
 
                 });

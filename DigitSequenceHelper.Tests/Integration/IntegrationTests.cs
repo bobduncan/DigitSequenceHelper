@@ -94,5 +94,22 @@ namespace DigitSequenceHelper.Tests.Integration
             Assert.AreEqual(121, matchedResult!.PredictedNumber);
             Assert.AreEqual(new GeoMetricNumberAnalyser().OperationName, matchedResult.Analyser.OperationName);
         }
+
+        [TestMethod]
+        public void Integration_Fibbonaci()
+        {
+            // Arrange
+            var sequence = new List<double> { 1, 1, 2, 3, 5 };
+
+            // Act
+            var results = Configuration.Analysers.Select(a => {
+                return a.Analyze(sequence);
+            });
+            var matchedResult = results.FirstOrDefault(x => x.PredictedNumber != null);
+
+            // Assert
+            Assert.AreEqual(8, matchedResult!.PredictedNumber);
+            Assert.AreEqual(new FibonacciNumberAnalyser().OperationName, matchedResult.Analyser.OperationName);
+        }
     }
 }

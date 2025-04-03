@@ -1,4 +1,3 @@
-using DigitSequenceHelper.Analysers;
 using IronOcr;
 
 namespace DigitSequenceHelper
@@ -26,14 +25,12 @@ namespace DigitSequenceHelper
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Control && e.KeyCode == Keys.V)
+            if (e.Control && e.KeyCode == Keys.V
+                && Clipboard.ContainsImage())
             {
-                if (Clipboard.ContainsImage())
-                {
-                    Image image = Clipboard.GetImage();
-                    pictureBox1.Image = image;
-                    ParseImage();
-                }
+                Image image = Clipboard.GetImage();
+                pictureBox1.Image = image;
+                ParseImage();
             }
         }
 
@@ -95,7 +92,8 @@ namespace DigitSequenceHelper
                     TextBox newTextBox = CreateDynamicTextBox();
                     flowLayoutPanelStart.Controls.Add(newTextBox);
                 }
-                else {
+                else
+                {
                     flowLayoutPanel1.Controls.Clear();
                     flowLayoutPanel1.Height = 0;
                     Analyse();
@@ -103,12 +101,21 @@ namespace DigitSequenceHelper
             }
         }
 
+        private void ResetUI()
+        {
+            flowLayoutPanelStart.Controls.Clear();
+            flowLayoutPanel1.Controls.Clear();
+            flowLayoutPanel1.Height = 0;
+            InitializeDynamicTextBoxes();
+        }
+
         #endregion
 
         private void Analyse()
         {
             var sequence = GetSequence();
-            var analyserResults = Configuration.Analysers.Select(a => {
+            var analyserResults = Configuration.Analysers.Select(a =>
+            {
                 return a.Analyze(sequence);
             });
 
@@ -126,8 +133,8 @@ namespace DigitSequenceHelper
                     flowLayoutPanel1.Controls.Add(flatResults);
                     flowLayoutPanel1.Height += FlowLayoutPanelInputHeight;
 
-                    var emptyPlaceHolderLabel = new Label 
-                    { 
+                    var emptyPlaceHolderLabel = new Label
+                    {
                         Text = x.Analyser.OperationName,
                         Width = TextBoxWidth + TextBoxWidth / 2
                     };
@@ -154,7 +161,7 @@ namespace DigitSequenceHelper
                             Text = x.PredictedNumber.ToString(),
                             BackColor = Color.LightGreen,
                             Width = TextBoxWidth,
-                            Margin = new Padding(TextBoxWidth/2,0, 0, 0)
+                            Margin = new Padding(TextBoxWidth / 2, 0, 0, 0)
                         };
 
                         flatResults.Controls.Add(label);
@@ -169,16 +176,18 @@ namespace DigitSequenceHelper
 
             foreach (Control control in flowLayoutPanelStart.Controls)
             {
-                if (control is TextBox textBox)
+                if (control is TextBox textBox
+                    && int.TryParse(textBox.Text, out int value))
                 {
-                    // Try to parse the TextBox text to an integer.
-                    if (int.TryParse(textBox.Text, out int value))
-                    {
-                        numbers.Add(value);
-                    }
+                    numbers.Add(value);
                 }
             }
             return numbers;
+        }
+
+        private void BtnReset_Click(object sender, EventArgs e)
+        {
+            ResetUI();
         }
     }
 }

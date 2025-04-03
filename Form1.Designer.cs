@@ -32,6 +32,7 @@
             flowLayoutPanel1 = new FlowLayoutPanel();
             flowLayoutPanelStart = new FlowLayoutPanel();
             richTextBox1 = new RichTextBox();
+            btnReset = new Button();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
@@ -66,11 +67,22 @@
             richTextBox1.TabIndex = 1;
             richTextBox1.Text = "";
             // 
+            // btnReset
+            // 
+            btnReset.Location = new Point(954, 21);
+            btnReset.Name = "btnReset";
+            btnReset.Size = new Size(94, 58);
+            btnReset.TabIndex = 6;
+            btnReset.Text = "Reset";
+            btnReset.UseVisualStyleBackColor = true;
+            btnReset.Click += BtnReset_Click;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new SizeF(8F, 20F);
             this.AutoScaleMode = AutoScaleMode.Font;
-            this.ClientSize = new Size(989, 383);
+            this.ClientSize = new Size(1060, 262);
+            this.Controls.Add(btnReset);
             this.Controls.Add(flowLayoutPanelStart);
             this.Controls.Add(flowLayoutPanel1);
             this.Controls.Add(richTextBox1);
@@ -87,5 +99,6 @@
         private FlowLayoutPanel flowLayoutPanel1;
         private FlowLayoutPanel flowLayoutPanelStart;
         private RichTextBox richTextBox1;
+        private Button btnReset;
     }
 }

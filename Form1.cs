@@ -1,3 +1,5 @@
+using BitMiracle.LibTiff.Classic;
+using DigitSequenceHelper.Analysers;
 using IronOcr;
 
 namespace DigitSequenceHelper
@@ -63,7 +65,7 @@ namespace DigitSequenceHelper
             flowLayoutPanel1.BackColor = Color.LightGray;
 
             TextBox initialTextBox = CreateDynamicTextBox();
-            flowLayoutPanelStart.Controls.Add(new Label { Width = TextBoxWidth });
+            flowLayoutPanelStart.Controls.Add(new Label { Width = TextBoxWidth * 2 });
             flowLayoutPanelStart.Controls.Add(initialTextBox);
         }
 
@@ -123,35 +125,11 @@ namespace DigitSequenceHelper
                 .ToList()
                 .ForEach(x =>
                 {
-                    var flatResults = new FlowLayoutPanel
-                    {
-                        Width = FlowLayoutPanelInputWidth,
-                        Height = FlowLayoutPanelInputHeight,
-                        BackColor = Color.LightGray
-                    };
-
-                    flowLayoutPanel1.Controls.Add(flatResults);
-                    flowLayoutPanel1.Height += FlowLayoutPanelInputHeight;
-
-                    var emptyPlaceHolderLabel = new Label
-                    {
-                        Text = x.Analyser.OperationName,
-                        Width = TextBoxWidth + TextBoxWidth / 2
-                    };
-                    flatResults.Controls.Add(emptyPlaceHolderLabel);
+                    var flatResults = CreateFlowLayoutPanel(x.Analyser.OperationName);
 
                     x.Results!.ForEach(result =>
                     {
-                        if (result != null)
-                        {
-                            var label = new Label
-                            {
-                                Text = result.DisplayValue ?? string.Empty,
-                                Width = TextBoxWidth
-                            };
-
-                            flatResults.Controls.Add(label);
-                        }
+                        AddAnalyserResultLabel(result, flatResults);
                     });
 
                     if (x.PredictedNumber != null)
@@ -159,9 +137,9 @@ namespace DigitSequenceHelper
                         var label = new Label
                         {
                             Text = x.PredictedNumber.ToString(),
-                            BackColor = Color.LightGreen,
+                            BackColor = Color.Yellow,
                             Width = TextBoxWidth,
-                            Margin = new Padding(TextBoxWidth / 2, 0, 0, 0)
+                            //Margin = new Padding(TextBoxWidth / 2, 0, 0, 0)
                         };
 
                         flatResults.Controls.Add(label);
@@ -169,6 +147,57 @@ namespace DigitSequenceHelper
 
                 });
         }
+
+        #region UI Elements
+
+        public FlowLayoutPanel CreateFlowLayoutPanel(string header)
+        {
+            var flatResults = new FlowLayoutPanel
+            {
+                Width = FlowLayoutPanelInputWidth,
+                Height = FlowLayoutPanelInputHeight,
+                BackColor = Color.LightGray
+            };
+
+            flowLayoutPanel1.Controls.Add(flatResults);
+            flowLayoutPanel1.Height += FlowLayoutPanelInputHeight;
+
+            var emptyPlaceHolderLabel = new Label
+            {
+                Text = header,
+                Width = TextBoxWidth * 2 + TextBoxWidth / 2
+            };
+            flatResults.Controls.Add(emptyPlaceHolderLabel);
+            return flatResults;
+        }
+
+        public void AddAnalyserResultLabel(AnalyseResult result, FlowLayoutPanel parent)
+        {
+            if (result != null)
+            {
+                var label = new Label
+                {
+                    Text = result.DisplayValue ?? string.Empty,
+                    BackColor = Color.LightGreen,
+                    Width = TextBoxWidth
+                };
+
+                parent.Controls.Add(label);
+            }
+            else
+            {
+                var label = new Label
+                {
+                    Text = string.Empty,
+                    BackColor = Color.Red,
+                    Width = TextBoxWidth
+                };
+
+                parent.Controls.Add(label);
+            }
+        }
+
+        #endregion
 
         private List<double> GetSequence()
         {

@@ -6,7 +6,7 @@ namespace DigitSequenceHelper.Analysers
     public class GeoMetricNumberAnalyser : BaseNumberAnalyser
     {
         public override string NumberPrefix => "^";
-        public override string OperationName => "Geometric";
+        public override string OperationName { get; set; } = "Geometric";
 
         public override AnalyseResults Analyze(List<double> numbers)
         {
@@ -19,9 +19,9 @@ namespace DigitSequenceHelper.Analysers
             };
 
             var deltas = new AdditionNumberAnalyser().Analyze(numbers);
-            var deltaValues = deltas?.Results!
+            var deltaValues = deltas?.Results?
                 .Where(x => x != null)
-                .Select(x => (int)x.Value)
+                .Select(x => (int)x.Value!)
                 .ToList();
 
             var greatestCommonDenominator = GCD(deltaValues);
@@ -33,7 +33,7 @@ namespace DigitSequenceHelper.Analysers
             var displayValues = deltas?.Results!.Where(x => x != null).Select(x => x.Value)
                 .Where(x => x != null)
                 .Select(x => {
-                    var exponent = GetExponent(greatestCommonDenominator.Value, (int)x!);
+                    var exponent = GetExponent(greatestCommonDenominator!.Value, (int)x!);
                     if (exponent == -1) return null;
 
                     return new AnalyseResult(x, $"+{greatestCommonDenominator}{ToSuperscript(exponent)}");
@@ -44,9 +44,9 @@ namespace DigitSequenceHelper.Analysers
             {
                 Analyser = this,
                 Input = numbers,
-                IsMatch = deltas.IsMatch,
-                Results = displayValues,
-                ExtraInfo = greatestCommonDenominator
+                IsMatch = deltas!.IsMatch,
+                Results = displayValues!,
+                ExtraInfo = greatestCommonDenominator!
             };
 
             var predictedNumber = PredictNumber(finalResult);
@@ -75,7 +75,7 @@ namespace DigitSequenceHelper.Analysers
                 if (modifiers.All(m => m == 0))
                 {
                     var lastDelta = result.Results.Last().Value;
-                    var lastExponent = GetExponent(gcd, (int)lastDelta);
+                    var lastExponent = GetExponent(gcd, (int)lastDelta!);
                     var modifier = (int)Math.Pow(gcd, lastExponent+1);
 
 

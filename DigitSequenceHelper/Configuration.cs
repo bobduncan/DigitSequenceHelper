@@ -1,4 +1,5 @@
 ﻿using DigitSequenceHelper.Analysers;
+using DigitSequenceHelper.Transformer;
 
 namespace DigitSequenceHelper
 {
@@ -15,6 +16,12 @@ namespace DigitSequenceHelper
 
                 new SubtractionNumberAnalyser(),
                 new AdditionNumberAnalyser(),
+            ];
+
+        public static readonly List<BaseNumberTransformer> Transformers =
+            [
+                new SplitNumberTransformer(),
+                new ReserveNumberTransformer(),
             ];
     }
 }

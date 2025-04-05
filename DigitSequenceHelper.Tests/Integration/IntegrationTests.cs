@@ -111,5 +111,36 @@ namespace DigitSequenceHelper.Tests.Integration
             Assert.AreEqual(8, matchedResult!.PredictedNumber);
             Assert.AreEqual(new FibonacciNumberAnalyser().OperationName, matchedResult.Analyser.OperationName);
         }
+
+        [TestMethod]
+        public void Integration_OddList_Addition()
+        {
+            // Arrange
+            var sequence = new List<double> { 1, 600, 3, 600, 5, 600, 7, 600};
+
+            // Act
+
+            var results = Processsor.Process(sequence);
+            var matchedResult = results.FirstOrDefault(x => x.PredictedNumber != null);
+
+            // Assert
+            Assert.AreEqual(9, matchedResult!.PredictedNumber);
+            Assert.AreEqual(new AdditionNumberAnalyser().OperationName, matchedResult.Analyser.OperationName);
+        }
+
+        [TestMethod]
+        public void Integration_EvenList_Constant()
+        {
+            // Arrange
+            var sequence = new List<double> { 1, 600, 3, 600, 5, 600, 7 };
+
+            // Act
+
+            var results = Processsor.Process(sequence);
+            var matchedResult = results.FirstOrDefault(x => x.PredictedNumber != null);
+
+            // Assert
+            Assert.AreEqual(600, matchedResult!.PredictedNumber);
+        }
     }
 }

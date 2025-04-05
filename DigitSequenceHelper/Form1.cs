@@ -22,7 +22,7 @@ namespace DigitSequenceHelper
         private void InitializeImageParsing()
         {
             this.KeyPreview = true;
-            this.KeyDown += new KeyEventHandler(Form1_KeyDown);
+            this.KeyDown += new KeyEventHandler(Form1_KeyDown!);
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
@@ -30,7 +30,7 @@ namespace DigitSequenceHelper
             if (e.Control && e.KeyCode == Keys.V
                 && Clipboard.ContainsImage())
             {
-                Image image = Clipboard.GetImage();
+                Image image = Clipboard.GetImage()!;
                 pictureBox1.Image = image;
                 ParseImage();
             }
@@ -75,7 +75,7 @@ namespace DigitSequenceHelper
             {
                 Width = TextBoxWidth // Set a desired width
             };
-            textBox.TextChanged += DynamicTextBox_TextChanged;
+            textBox.TextChanged += DynamicTextBox_TextChanged!;
             return textBox;
         }
 
@@ -116,10 +116,7 @@ namespace DigitSequenceHelper
         private void Analyse()
         {
             var sequence = GetSequence();
-            var analyserResults = Configuration.Analysers.Select(a =>
-            {
-                return a.Analyze(sequence);
-            });
+            var analyserResults = Processsor.Process(sequence);
 
             analyserResults.Where(analysers => analysers?.Results != null && analysers.Results.Any(x => x != null))
                 .ToList()

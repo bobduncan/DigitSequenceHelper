@@ -6,7 +6,7 @@ namespace DigitSequenceHelper.Analysers
     public class FibonacciNumberAnalyser : BaseNumberAnalyser
     {
         public override string NumberPrefix => "^";
-        public override string OperationName => "Fibonacci";
+        public override string OperationName { get; set; } = "Fibonacci";
 
         public override AnalyseResults Analyze(List<double> numbers)
         {

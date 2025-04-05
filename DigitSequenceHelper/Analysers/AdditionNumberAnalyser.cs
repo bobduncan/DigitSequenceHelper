@@ -3,7 +3,7 @@
     public class AdditionNumberAnalyser : BaseNumberAnalyser
     {
         public override string NumberPrefix => "+";
-        public override string OperationName => "Add";
+        public override string OperationName { get; set; } = "Add";
 
         public override AnalyseResult? Analyse(double a, double b)
         {

@@ -7,7 +7,7 @@
             if (numbers == null || numbers.Count < 2) return new AnalyseResults
             {
                 Analyser = this,
-                Input = numbers,
+                Input = numbers!,
                 IsMatch = false,
                 Results = null
             };
@@ -24,7 +24,7 @@
                 Analyser = this,
                 Input = numbers,
                 IsMatch = results != null,
-                Results = results
+                Results = results!
             };
 
             var predictedNumber = PredictNumber(finalResult);
@@ -53,6 +53,6 @@
         public abstract AnalyseResult? Analyse(double a, double b);
 
         public abstract string NumberPrefix { get; }
-        public abstract string OperationName { get; }
+        public abstract string OperationName { get; set; }
     }
 }

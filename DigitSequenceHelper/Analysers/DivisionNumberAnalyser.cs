@@ -3,7 +3,7 @@
     public class DivisionNumberAnalyser : BaseNumberAnalyser
     {
         public override string NumberPrefix => "/";
-        public override string OperationName => "Division";
+        public override string OperationName { get; set; } = "Division";
 
         public override AnalyseResult? Analyse(double a, double b)
         {

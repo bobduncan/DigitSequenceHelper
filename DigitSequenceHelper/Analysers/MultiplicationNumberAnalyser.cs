@@ -3,7 +3,7 @@
     public class MultiplicationNumberAnalyser : BaseNumberAnalyser
     {
         public override string NumberPrefix => "x";
-        public override string OperationName => "Multiplication";
+        public override string OperationName { get; set; } = "Multiplication";
 
         public override AnalyseResult? Analyse(double a, double b)
         {

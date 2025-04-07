@@ -19,8 +19,9 @@ namespace DigitSequenceHelper.Analysers
                 Results = null
             };
 
-            var deltas = new AdditionNumberAnalyser().Analyze(numbers, previousResults);
-            var deltaValues = deltas?.Results?
+            var additionAnalyserResults = previousResults.FirstOrDefault(x => x.Analyser is AdditionNumberAnalyser)
+                ?? new AdditionNumberAnalyser().Analyze(numbers, previousResults);
+            var deltaValues = additionAnalyserResults?.Results?
                 .Where(x => x != null)
                 .Select(x => (int)x.Value!)
                 .ToList();
@@ -31,7 +32,7 @@ namespace DigitSequenceHelper.Analysers
                 return result;
             }
 
-            var displayValues = deltas?.Results?.Where(x => x != null).Select(x => x.Value)
+            var displayValues = additionAnalyserResults?.Results?.Where(x => x != null).Select(x => x.Value)
                 .Where(x => x != null)
                 .Select(x => {
                     var exponent = GetExponent(greatestCommonDenominator!.Value, (int)x!);
@@ -45,7 +46,7 @@ namespace DigitSequenceHelper.Analysers
             {
                 Analyser = this,
                 Input = numbers,
-                IsMatch = deltas!.IsMatch,
+                IsMatch = additionAnalyserResults!.IsMatch,
                 Results = displayValues!,
                 ExtraInfo = greatestCommonDenominator!
             };

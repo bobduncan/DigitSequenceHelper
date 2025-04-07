@@ -8,14 +8,14 @@ namespace DigitSequenceHelper
         // Order of analysers is important
         public static readonly List<INumberAnalyser> Analysers =
             [
-                new FibonacciNumberAnalyser(),
-                new GeoMetricNumberAnalyser(),
-            
+                new AdditionNumberAnalyser(),
+                new SubtractionNumberAnalyser(),
+
                 new MultiplicationNumberAnalyser(),
                 new DivisionNumberAnalyser(),
 
-                new SubtractionNumberAnalyser(),
-                new AdditionNumberAnalyser(),
+                new FibonacciNumberAnalyser(),
+                new GeoMetricNumberAnalyser(), 
             ];
 
         public static readonly List<BaseNumberTransformer> Transformers =

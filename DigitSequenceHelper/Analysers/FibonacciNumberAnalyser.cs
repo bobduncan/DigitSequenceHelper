@@ -28,7 +28,10 @@ namespace DigitSequenceHelper.Analysers
             }
 
             result.IsMatch = true;
-            result.Results = new AdditionNumberAnalyser().Analyze(numbers, previousResults).Results;
+
+            var additionAnalyserResults = previousResults.FirstOrDefault(x => x.Analyser is AdditionNumberAnalyser)
+                                        ?? new AdditionNumberAnalyser().Analyze(numbers, previousResults);
+            result.Results = additionAnalyserResults.Results;
 
             var predictedNumber = PredictNumber(result);
             if (predictedNumber != null) result.PredictedNumber = predictedNumber;

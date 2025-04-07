@@ -22,7 +22,7 @@ namespace DigitSequenceHelper
             [
                 new DoNothingTransformer(),
                 new SplitNumberTransformer(),
-                new ReserveNumberTransformer(),
+                //new ReserveNumberTransformer(), Has a visual bug and not needed.
             ];
     }
 }

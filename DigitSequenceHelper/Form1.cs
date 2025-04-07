@@ -108,6 +108,7 @@ namespace DigitSequenceHelper
             flowLayoutPanelStart.Controls.Clear();
             flowLayoutPanel1.Controls.Clear();
             flowLayoutPanel1.Height = 0;
+            this.Size = new Size(this.Size.Width, 300);
             InitializeDynamicTextBoxes();
         }
 
@@ -118,7 +119,9 @@ namespace DigitSequenceHelper
             var sequence = GetSequence();
             var analyserResults = Processsor.Process(sequence);
 
-            analyserResults.Where(analysers => analysers?.Results != null && analysers.Results.Any(x => x != null))
+            analyserResults
+                .Where(analysers => analysers?.Results != null && analysers.Results.Any(x => x != null))
+                .OrderByDescending(x => x.PredictedNumber != null)
                 .ToList()
                 .ForEach(x =>
                 {
@@ -166,6 +169,8 @@ namespace DigitSequenceHelper
 
             flowLayoutPanel1.Controls.Add(flatResults);
             flowLayoutPanel1.Height += FlowLayoutPanelInputHeight;
+            flowLayoutPanel1.Padding = new Padding(0, 100, 0, 0);
+            this.Size = new Size(this.Size.Width, this.Size.Height + FlowLayoutPanelInputHeight);
 
             var emptyPlaceHolderLabel = new Label
             {

@@ -46,10 +46,12 @@
             // 
             // flowLayoutPanel1
             // 
-            flowLayoutPanel1.Dock = DockStyle.Bottom;
-            flowLayoutPanel1.Location = new Point(0, 99);
+            flowLayoutPanel1.AutoSize = true;
+            flowLayoutPanel1.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            flowLayoutPanel1.Dock = DockStyle.Top;
+            flowLayoutPanel1.Location = new Point(0, 0);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(1060, 135);
+            flowLayoutPanel1.Size = new Size(1062, 0);
             flowLayoutPanel1.TabIndex = 4;
             // 
             // flowLayoutPanelStart
@@ -80,18 +82,19 @@
             // 
             // Form1
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
-            AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1060, 234);
-            Controls.Add(btnReset);
-            Controls.Add(flowLayoutPanelStart);
-            Controls.Add(flowLayoutPanel1);
-            Controls.Add(richTextBox1);
-            Controls.Add(pictureBox1);
-            Name = "Form1";
-            Text = "Form1";
+            this.AutoScaleDimensions = new SizeF(8F, 20F);
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.ClientSize = new Size(1062, 253);
+            this.Controls.Add(btnReset);
+            this.Controls.Add(flowLayoutPanelStart);
+            this.Controls.Add(flowLayoutPanel1);
+            this.Controls.Add(richTextBox1);
+            this.Controls.Add(pictureBox1);
+            this.Name = "Form1";
+            this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion

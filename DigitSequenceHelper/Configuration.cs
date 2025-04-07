@@ -20,6 +20,7 @@ namespace DigitSequenceHelper
 
         public static readonly List<BaseNumberTransformer> Transformers =
             [
+                new DoNothingTransformer(),
                 new SplitNumberTransformer(),
                 new ReserveNumberTransformer(),
             ];

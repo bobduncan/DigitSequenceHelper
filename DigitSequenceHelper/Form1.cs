@@ -122,7 +122,7 @@ namespace DigitSequenceHelper
                 .ToList()
                 .ForEach(x =>
                 {
-                    var flatResults = CreateFlowLayoutPanel(x.Analyser.OperationName);
+                    var flatResults = CreateFlowLayoutPanel(x.OperationName);
 
                     x.Results!.ForEach(result =>
                     {
@@ -155,7 +155,7 @@ namespace DigitSequenceHelper
 
         #region UI Elements
 
-        public FlowLayoutPanel CreateFlowLayoutPanel(string header)
+        public FlowLayoutPanel CreateFlowLayoutPanel(string? header)
         {
             var flatResults = new FlowLayoutPanel
             {
@@ -176,7 +176,7 @@ namespace DigitSequenceHelper
             return flatResults;
         }
 
-        public void AddAnalyserResultLabel(AnalyseResult result, FlowLayoutPanel parent)
+        public static void AddAnalyserResultLabel(AnalyseResult result, FlowLayoutPanel parent)
         {
             if (result != null)
             {

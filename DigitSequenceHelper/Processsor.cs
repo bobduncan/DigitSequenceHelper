@@ -6,25 +6,23 @@ namespace DigitSequenceHelper
     {
         public static IEnumerable<AnalyseResults> Process(List<double> sequence)
         {
-            var totalResults = Configuration.Analysers.Select(a =>
-            {
-                return a.Analyze(sequence);
-            }).ToList();
+            List<AnalyseResults> totalResults = [];
 
             Configuration.Transformers.ForEach(t =>
             {
                 var newSequence = t.Transform(sequence);
-                var results = Configuration.Analysers.Select(a =>
+
+                List<AnalyseResults> transformerResults = [];
+                Configuration.Analysers.ForEach(a =>
                 {
-                    return a.Analyze(newSequence);
-                }).ToList();
+                    var result = a.Analyze(newSequence, transformerResults);
+                    transformerResults.Add(result);
+                });
 
-                results.ForEach(r => t.ParseResults(r, sequence));
+                transformerResults.ForEach(r => t.ParseResults(r, sequence));
 
-                totalResults.AddRange(results);
+                totalResults.AddRange(transformerResults);
             });
-
-            
 
             return totalResults;
         }

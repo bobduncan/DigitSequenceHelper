@@ -8,7 +8,7 @@ namespace DigitSequenceHelper.Analysers
         public override string NumberPrefix => "^";
         public override string OperationName { get; set; } = "Fibonacci";
 
-        public override AnalyseResults Analyze(List<double> numbers)
+        public override AnalyseResults Analyze(List<double> numbers, List<AnalyseResults> previousResults)
         {
             var result = new AnalyseResults
             {
@@ -28,7 +28,7 @@ namespace DigitSequenceHelper.Analysers
             }
 
             result.IsMatch = true;
-            result.Results = new AdditionNumberAnalyser().Analyze(numbers).Results;
+            result.Results = new AdditionNumberAnalyser().Analyze(numbers, previousResults).Results;
 
             var predictedNumber = PredictNumber(result);
             if (predictedNumber != null) result.PredictedNumber = predictedNumber;

@@ -1,4 +1,6 @@
-﻿namespace DigitSequenceHelper.Transformer
+﻿using DigitSequenceHelper.Analysers;
+
+namespace DigitSequenceHelper.Transformer
 {
     public class ReserveNumberTransformer : BaseNumberTransformer
     {
@@ -6,6 +8,13 @@
         {
             sequence.Reverse();
             return sequence;
+        }
+
+        public override void ParseResults(AnalyseResults results, List<double> sequence)
+        {
+            if (results.Results == null) return;
+
+            results.OperationName = "Reverse" + results.Analyser?.OperationName;
         }
     }
 }

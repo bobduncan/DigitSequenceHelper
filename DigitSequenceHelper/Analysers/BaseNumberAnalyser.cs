@@ -2,7 +2,7 @@
 {
     public abstract class BaseNumberAnalyser : INumberAnalyser
     {
-        public virtual AnalyseResults Analyze(List<double> numbers)
+        public virtual AnalyseResults Analyze(List<double> numbers, List<AnalyseResults> previousResults)
         {
             if (numbers == null || numbers.Count < 2) return new AnalyseResults
             {

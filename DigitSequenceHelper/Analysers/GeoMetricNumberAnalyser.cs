@@ -1,5 +1,6 @@
 ﻿
 using Google.Protobuf.WellKnownTypes;
+using System.Text;
 
 namespace DigitSequenceHelper.Analysers
 {
@@ -8,7 +9,7 @@ namespace DigitSequenceHelper.Analysers
         public override string NumberPrefix => "^";
         public override string OperationName { get; set; } = "Geometric";
 
-        public override AnalyseResults Analyze(List<double> numbers)
+        public override AnalyseResults Analyze(List<double> numbers, List<AnalyseResults> previousResults)
         {
             var result = new AnalyseResults
             {
@@ -18,7 +19,7 @@ namespace DigitSequenceHelper.Analysers
                 Results = null
             };
 
-            var deltas = new AdditionNumberAnalyser().Analyze(numbers);
+            var deltas = new AdditionNumberAnalyser().Analyze(numbers, previousResults);
             var deltaValues = deltas?.Results?
                 .Where(x => x != null)
                 .Select(x => (int)x.Value!)
@@ -30,7 +31,7 @@ namespace DigitSequenceHelper.Analysers
                 return result;
             }
 
-            var displayValues = deltas?.Results!.Where(x => x != null).Select(x => x.Value)
+            var displayValues = deltas?.Results?.Where(x => x != null).Select(x => x.Value)
                 .Where(x => x != null)
                 .Select(x => {
                     var exponent = GetExponent(greatestCommonDenominator!.Value, (int)x!);
@@ -68,7 +69,7 @@ namespace DigitSequenceHelper.Analysers
                 // Since you get the delta between numbers, you dont want each number to be the same as the exponent to be 1.
                 && result.Results.Any(x => x.Value != result.Results[0]!.Value))
             {
-                int gcd = (int)result.ExtraInfo;
+                int gcd = (int)result.ExtraInfo!;
 
                 // If the module is 0, it means that the numbers are multiples of the gcd.
                 var modifiers = result.Results.Select(x => x.Value % gcd).ToList();
@@ -79,7 +80,7 @@ namespace DigitSequenceHelper.Analysers
                     var modifier = (int)Math.Pow(gcd, lastExponent+1);
 
 
-                    var lastValue = result.Input.Last();
+                    var lastValue = result.Input!.Last();
                     return PredictNumber(lastValue, modifier);
                 }
             }
@@ -140,15 +141,15 @@ namespace DigitSequenceHelper.Analysers
         {
             if (exponent < 0 || exponent > 9) return "?";
             string[] superscripts = ["⁰", "¹", "²", "³", "⁴", "⁵", "⁶", "⁷", "⁸", "⁹"];
-            string result = "";
+            StringBuilder sb = new();
 
             foreach (char digit in exponent.ToString())
             {
                 int i = digit - '0';
-                result += superscripts[i];
+                sb.Append(superscripts[i]);
             }
 
-            return result;
+            return sb.ToString();
         }
     }
 }

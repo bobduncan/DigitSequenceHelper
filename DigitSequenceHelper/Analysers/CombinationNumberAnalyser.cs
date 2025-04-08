@@ -24,24 +24,27 @@ namespace DigitSequenceHelper.Analysers
                 return result;
 
             // Strategy, find all analysers for which the first number matches and the analyser has a match at least twice in the entire sequence.
-            var allPatterns = FindAllPatterns(numbers, previousResults, 0);
+            var allCombinations = FindAllCombinations(numbers, previousResults, 0);
 
             // Filter out patterns that are not a combination of multiple patterns.
-            var filteredPatterns = allPatterns.Where(pattern => !pattern.All(p => {
+            var filteredCombinations = allCombinations.Where(pattern => !pattern.All(p => {
                 return p.Analyser.OperationName == pattern[0].Analyser.OperationName;
             }));
 
             // Filter out combinations that are not actually a pattern, just a combination of mathes.
             // The first match must atleast occur twice in the entire sequence.
-            var uniqueFilteredPatterns = filteredPatterns.Where(pattern => {
+            var possiblePatterns = filteredCombinations.Where(pattern => {
                 return pattern.Count(p => p.Analyser.OperationName == pattern[0].Analyser.OperationName) >= 2;
             });
 
             // Needs to be actually a pattern and not just a combination of matches.
-            var repeatedPatterns = uniqueFilteredPatterns.Where(pattern =>
+            var repeatedPatterns = possiblePatterns.Where(pattern =>
             {
                 List<string?> patternResults = pattern.Select(p => p.OperationName).ToList();
-                return IsPatternRepeated(patternResults);
+                Func<CombinationAnalyseResults, CombinationAnalyseResults, bool> comparer = (a, b) => {
+                    return a.OperationName == b.OperationName && a.SelectedResult == b.SelectedResult;
+                };
+                return IsPatternRepeated(pattern, comparer);
             });
 
             //TODO deal with multi patterns.
@@ -84,9 +87,9 @@ namespace DigitSequenceHelper.Analysers
         }
 
         #region Patterns
-        public static List<List<AnalyseResults>> FindAllPatterns(List<double> numbers, List<AnalyseResults> results, int index)
+        public static List<List<CombinationAnalyseResults>> FindAllCombinations(List<double> numbers, List<AnalyseResults> results, int index)
         {
-            List<List<AnalyseResults>> result = [];
+            List<List<CombinationAnalyseResults>> result = [];
             if (index >= numbers.Count) return result;
 
             var possibleFollowupPatterns = results.Where(
@@ -96,15 +99,15 @@ namespace DigitSequenceHelper.Analysers
 
             foreach (var possibleFollowupPattern in possibleFollowupPatterns)
             {
-                var patterns = FindAllPatterns(numbers, results, index+1);
+                var patterns = FindAllCombinations(numbers, results, index+1);
 
                 if (patterns.Count == 0)
                 {
-                    patterns.Add([possibleFollowupPattern]);
+                    patterns.Add([new CombinationAnalyseResults(possibleFollowupPattern, index)]);
                 }
                 else
                 {
-                    patterns.ForEach(p => p.Insert(0, possibleFollowupPattern));
+                    patterns.ForEach(p => p.Insert(0, new CombinationAnalyseResults(possibleFollowupPattern, index)));
                 }
                 patterns.ForEach(result.Add);
             }
@@ -112,22 +115,16 @@ namespace DigitSequenceHelper.Analysers
             return result;
         }
 
-        public static bool IsPatternRepeated<T>(List<T> list)
+        public static bool IsPatternRepeated<T>(List<T> list, Func<T, T, bool> areEqual = null)
         {
+            areEqual ??= ((x, y) => EqualityComparer<T>.Default.Equals(x, y));
+
             int n = list.Count;
 
             for (int patternLength = 1; patternLength < n; patternLength++)
             {
-                bool matches = true;
-
-                for (int i = 0; i < n; i++)
-                {
-                    if (!EqualityComparer<T>.Default.Equals(list[i], list[i % patternLength]))
-                    {
-                        matches = false;
-                        break;
-                    }
-                }
+                bool matches = Enumerable.Range(0, n)
+                    .All(i => areEqual(list[i], list[i % patternLength]));
 
                 if (matches)
                     return true;
@@ -174,6 +171,27 @@ namespace DigitSequenceHelper.Analysers
         public override double? PredictNumber(double? previousNumber, double? modifier)
         {
             throw new NotImplementedException();
+        }
+    }
+
+    public record CombinationAnalyseResults : AnalyseResults
+    {
+        public int Index { get; set; }
+        public AnalyseResult? SelectedResult { get { return Results?[Index]; } }
+
+        public CombinationAnalyseResults(AnalyseResults result, int index) : this(index)
+        {
+            Analyser = result.Analyser;
+            Input = result.Input;
+            IsMatch = result.IsMatch;
+            Results = result.Results;
+            PredictedNumber = result.PredictedNumber;
+            ExtraInfo = result.ExtraInfo;
+        }
+
+        public CombinationAnalyseResults(int index)
+        {
+            Index = index;
         }
     }
 }

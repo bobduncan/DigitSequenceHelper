@@ -15,7 +15,9 @@ namespace DigitSequenceHelper
                 new DivisionNumberAnalyser(),
 
                 new FibonacciNumberAnalyser(),
-                new GeoMetricNumberAnalyser(), 
+                new GeoMetricNumberAnalyser(),
+
+                new CombinationNumberAnalyser()
             ];
 
         public static readonly List<BaseNumberTransformer> Transformers =

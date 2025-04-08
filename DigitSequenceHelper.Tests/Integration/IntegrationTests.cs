@@ -125,5 +125,20 @@ namespace DigitSequenceHelper.Tests.Integration
             // Assert
             Assert.AreEqual(600, matchedResult!.PredictedNumber);
         }
+
+        [TestMethod]
+        public void Integration_Combination_Plus3Minus1()
+        {
+            // Arrange
+            var sequence = new List<double> { 1, 4, 3, 6, 5 };
+
+            // Act
+            var results = Processsor.Process(sequence);
+            var matchedResult = results.FirstOrDefault(x => x.PredictedNumber != null);
+
+            // Assert
+            Assert.AreEqual(8, matchedResult!.PredictedNumber);
+            Assert.AreEqual(new CombinationNumberAnalyser().OperationName, matchedResult.OperationName);
+        }
     }
 }

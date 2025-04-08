@@ -32,13 +32,13 @@ namespace DigitSequenceHelper.Analysers
                 return result;
             }
 
-            var displayValues = additionAnalyserResults?.Results?.Where(x => x != null).Select(x => x.Value)
-                .Where(x => x != null)
+            var displayValues = additionAnalyserResults?.Results?
                 .Select(x => {
-                    var exponent = GetExponent(greatestCommonDenominator!.Value, (int)x!);
+                    if (x?.Value == null) return null;
+                    var exponent = GetExponent(greatestCommonDenominator!.Value, (int)x!.Value);
                     if (exponent == -1) return null;
 
-                    return new AnalyseResult(x, $"+{greatestCommonDenominator}{ToSuperscript(exponent)}");
+                    return new AnalyseResult(x!.Value, $"+{greatestCommonDenominator}{ToSuperscript(exponent)}");
                 })
                 .ToList();
 

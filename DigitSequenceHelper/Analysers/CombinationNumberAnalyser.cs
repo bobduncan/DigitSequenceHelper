@@ -28,22 +28,22 @@ namespace DigitSequenceHelper.Analysers
 
             // Filter out patterns that are not a combination of multiple patterns.
             var filteredCombinations = allCombinations.Where(pattern => !pattern.All(p => {
-                return p.Analyser.OperationName == pattern[0].Analyser.OperationName;
+                return p!.Analyser?.OperationName == pattern[0]!.Analyser?.OperationName;
             }));
 
             // Filter out combinations that are not actually a pattern, just a combination of mathes.
             // The first match must atleast occur twice in the entire sequence.
             var possiblePatterns = filteredCombinations.Where(pattern => {
-                return pattern.Count(p => p.Analyser.OperationName == pattern[0].Analyser.OperationName) >= 2;
+                return pattern.Count(p => p!.Analyser?.OperationName == pattern[0]!.Analyser?.OperationName) >= 2;
             });
 
             // Needs to be actually a pattern and not just a combination of matches.
             var repeatedPatterns = possiblePatterns.Where(pattern =>
             {
-                List<string?> patternResults = pattern.Select(p => p.OperationName).ToList();
-                Func<CombinationAnalyseResults, CombinationAnalyseResults, bool> comparer = (a, b) => {
+                static bool comparer(CombinationAnalyseResults a, CombinationAnalyseResults b)
+                {
                     return a.OperationName == b.OperationName && a.SelectedResult == b.SelectedResult;
-                };
+                }
                 return IsPatternRepeated(pattern, comparer);
             });
 
@@ -52,38 +52,34 @@ namespace DigitSequenceHelper.Analysers
             if (repeatedPattern != null)
             {
                 result.IsMatch = true;
-
-                List<KeyValuePair<INumberAnalyser, AnalyseResult?>> analyseCombination = repeatedPattern
-                    .Select((list, index) => new KeyValuePair<INumberAnalyser, AnalyseResult?>(list.Analyser!, list.Results!.Count > index ? list.Results[index] : null))
-                    .ToList();
-
-                result.Results = analyseCombination.Select(x => x.Value).ToList();
-                result.ExtraInfo = analyseCombination;
-                result.PredictedNumber = PredictNumber(result);
-
+                result.Results = repeatedPattern.Select(x => x.SelectedResult).ToList();
+                result.PredictedNumber = PredictNumber(result, repeatedPattern);
             }
-
 
             return result;
         }
 
-        public override double? PredictNumber(AnalyseResults result)
+        public static double? PredictNumber(AnalyseResults result, List<CombinationAnalyseResults> repeatedPatterns)
         {
             if (result == null) return null;
 
-            var repeatedPatterns = (List<KeyValuePair<INumberAnalyser, AnalyseResult?>>) result.ExtraInfo;
-
             // 1. Find 1 complete pattern.
-            var onePatternCycleCount = GetFundamentalCycle(repeatedPatterns.Select(x=> x.Key.OperationName).ToList()).Count;
+            var onePatternCycleCount = GetFundamentalCycle(repeatedPatterns.Select(x=> x.OperationName).ToList()).Count;
             var onePatternCycle = result.Results!.Take(onePatternCycleCount).ToList();
             var onePatternCycleWithAnalyser = onePatternCycle.Select((item, index) => repeatedPatterns[index]).ToList();
 
             // 2. Determine the next operation in the sequence
-            var preditedNextOperation = GetNextInSequence(repeatedPatterns, onePatternCycleWithAnalyser);
+            var predictedNextOperation = GetNextInSequence(repeatedPatterns, onePatternCycleWithAnalyser);
+            if (predictedNextOperation.SelectedResult?.Value == null) return null;
 
             // 3. Use that analyser and the delta to determine its next number.
-            var preditedNumber = preditedNextOperation.Key.PredictNumber(result.Input!.Last(), preditedNextOperation.Value.Value);
+            var preditedNumber = predictedNextOperation.Analyser!.PredictNumber(result.Input!.Last(), predictedNextOperation.SelectedResult.Value);
             return preditedNumber;
+        }
+
+        public override double? PredictNumber(double? previousNumber, double? modifier)
+        {
+            throw new NotImplementedException();
         }
 
         #region Patterns
@@ -115,7 +111,7 @@ namespace DigitSequenceHelper.Analysers
             return result;
         }
 
-        public static bool IsPatternRepeated<T>(List<T> list, Func<T, T, bool> areEqual = null)
+        public static bool IsPatternRepeated<T>(List<T> list, Func<T, T, bool>? areEqual = null)
         {
             areEqual ??= ((x, y) => EqualityComparer<T>.Default.Equals(x, y));
 
@@ -168,30 +164,27 @@ namespace DigitSequenceHelper.Analysers
             throw new NotImplementedException();
         }
 
-        public override double? PredictNumber(double? previousNumber, double? modifier)
-        {
-            throw new NotImplementedException();
-        }
+
     }
 
     public record CombinationAnalyseResults : AnalyseResults
     {
         public int Index { get; set; }
-        public AnalyseResult? SelectedResult { get { return Results?[Index]; } }
+        public AnalyseResult? SelectedResult { get { return this.Results?[this.Index]; } }
 
         public CombinationAnalyseResults(AnalyseResults result, int index) : this(index)
         {
-            Analyser = result.Analyser;
-            Input = result.Input;
-            IsMatch = result.IsMatch;
-            Results = result.Results;
-            PredictedNumber = result.PredictedNumber;
-            ExtraInfo = result.ExtraInfo;
+            this.Analyser = result.Analyser;
+            this.Input = result.Input;
+            this.IsMatch = result.IsMatch;
+            this.Results = result.Results;
+            this.PredictedNumber = result.PredictedNumber;
+            this.ExtraInfo = result.ExtraInfo;
         }
 
         public CombinationAnalyseResults(int index)
         {
-            Index = index;
+            this.Index = index;
         }
     }
 }
